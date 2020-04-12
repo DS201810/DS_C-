@@ -1,0 +1,47 @@
+现在十分慢，deep改为2，判断一步还需2、3分钟
+deep为2代表走了两层min和两层max
+
+==============【待解决问题】============
+//problem: 现阶段有问题，不能按排序生成数组，数组中没有元素或者只有1个，暂时返回初始的
+void gen(int role, int computerside, int board[19][19], vector<Point>& answer) {;}
+
+//problem:不能正确判断棋盘结束
+bool isOver(int fake_Board[19][19])
+
+==============【可优化的部分】============
+//备选逻辑
+//现在仅是暴力枚举，可进行优化
+void otherDecide(int computerside, Step& myStep);
+
+//将备选逻辑注释了，暂时没有使用
+//生成点的函数需要优化啊，现在仅是生成点的数组没有排序
+void decide(int computerside, Step& myStep)
+
+//黑旗第一手下棋位置，现在默认的（9,9）
+==============【修改的部分】============
+
+//modify
+//如果仅依据x判断，当x值相同y值不同的点，会被认为为相同的点，在map中被覆盖，数据不会被存储
+bool operator<(const Point a, const Point b) {；}
+
+//modify:增加了参数
+void getVaildPoint(int virtualBoard[19][19],vector<Point>& t);
+
+//modify:增加了范围的参数，可供后续修改
+bool isAround(int virtualBoard[19][19],int x, int y)
+
+//modify: value初始化为0
+void value_situation(int fake_Board[19][19], int computerside, int& value)
+
+//modify:逻辑：“两层看成一层“min内部调用两次max，对max两次评分求和，取最小；max同逻辑
+min_layer和max_layer
+
+//modify:逻辑：“两层看成一层
+//原先问题：应该先拷贝棋盘之后，再生成点，AB没初始化
+
+void decide(int computerside, Step& myStep)
+==============【增加的部分】============
+//添加所有空位置的坐标
+void getEmptyPoint(int virtualBoard[19][19], vector<Point>& t);
+
+
