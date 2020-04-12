@@ -33,7 +33,7 @@ public:
 	//上述数组的每一个都填上一个随机数，至少保证是32位的长度（即32bit)，最好是64位。初始键值也设置一个随机数。
 	Zobrist()
 	{
-		
+		this->chushi();
 	}
 	Zobrist(int computerside)
 	{
@@ -299,7 +299,7 @@ void chess_type(int fake_Board[19][19], int x, int y, int directionX, int direct
 }
 
 
-
+//假如静态调用的话，设置step.first.x=-1;step.first.y=-1;step.second.x=-1;step.second.y=-1。
 void value_situation(int fake_Board[19][19], int computerside, Step step, int& value, int score_Hori[19], int score_verti[19],int score_left[38],int score_right[38])
 {
 	int value1 = 0;
@@ -313,8 +313,11 @@ void value_situation(int fake_Board[19][19], int computerside, Step step, int& v
 			fake_Board1[i][j] = fake_Board[i][j];
 		}
 	}
-	fake_Board1[step.first.x][step.first.y] = computerside;
-	fake_Board1[step.second.x][step.second.y] = computerside;
+	if (step.first.x >= 0 && step.first.x >= 0 && step.first.y >= 0 && step.second.y >= 0 && step.first.x < 19 && step.second.x < 19 && step.first.y < 19 && step.second.y < 19)
+	{
+		fake_Board1[step.first.x][step.first.y] = computerside;
+		fake_Board1[step.second.x][step.second.y] = computerside;
+	}
 	for (int i = 0;i < 19;i++)//横竖，搞定
 	{
 		score_Hori[i] = 0;
@@ -467,6 +470,8 @@ int getZobrist(int fake_Board[19][19],Step step,int computerside, int score_Hori
 }
 int main()
 {
+	
+	
 	Step step;//临时步结构
 	char message[256];//通信消息缓冲
 	int computerSide;//己方执棋颜色
@@ -477,6 +482,8 @@ int main()
 
 	while (1)	//程序主循环
 	{
+		
+		
 		fflush(stdout);//不要删除此语句，否则程序会出问题
 		scanf("%s", message);//获取平台命令消息
 		//分析命令
