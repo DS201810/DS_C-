@@ -179,10 +179,11 @@ bool isOver(int fake_Board[19][19]);
 
 
 /*******************待改进********************/
-string type[2][8] = { { "xxxxxx","oxxxxx+","+xxxxxo","+xxxxx+","+xxxx+","+x+xxx+" ,"+xx+xx+","+xxx+x+" } ,
-					{ "oooooo","xooooo+","+ooooox","+ooooo+","+oooo+","+o+ooo+","+oo+oo+" "+ooo+o+" } };
+string type[7] = { "oxxxxx+","+xxxxxo","+xxxxx+","+xxxx+","+x+xxx+" ,"+xx+xx+","+xxx+x+" };
+					
 
-int judgeChessType(int fake_Board[19][19], int x, int y, int directionX, int directionY, int& end, int my) {
+int judgeChessType(int fake_Board[19][19], int x, int y, int directionX, int directionY, int& end, int my)
+{
 
 	//my代表我的角色，！my来代表对方，判断对方是否出现了我必须要堵的情况
 	//判断棋的类型
@@ -191,8 +192,8 @@ int judgeChessType(int fake_Board[19][19], int x, int y, int directionX, int dir
 	int num, marko = 0, markx = 0, mark3 = 0;
 	int x1 = x;
 	int y1 = y;
-
-	for (int i = 0; i < 19; i++)//直接判断一条线
+	bool flag = false;
+	for (int i = 0; i < 38; i++)//直接判断一条线
 	{
 
 		if (x1 < 0 || y1 < 0 || x1 >= 19 || y1 >= 19)
@@ -202,7 +203,7 @@ int judgeChessType(int fake_Board[19][19], int x, int y, int directionX, int dir
 		else
 		{
 
-			if (fake_Board[x1][y1] == WHITE)
+			if (fake_Board[x1][y1] == my)
 			{
 				std::string b = "o";
 				marko++;
@@ -215,7 +216,7 @@ int judgeChessType(int fake_Board[19][19], int x, int y, int directionX, int dir
 				mark3++;
 				a = a + b;
 			}
-			else if (fake_Board[x1][y1] == BLACK)
+			else if (fake_Board[x1][y1] == 1-my)
 			{
 				std::string b = "x";
 				markx++;
@@ -230,49 +231,88 @@ int judgeChessType(int fake_Board[19][19], int x, int y, int directionX, int dir
 	}
 
 
-	for (int i = 0;i < 8;i++)
+	for (int i = 0;i < 7;i++)
 	{
 		int count = 0;
 		int begin = -1;
-		while ((begin = a.find(type[!my][i], begin + 1)) != std::string::npos)
+		while ((begin = a.find(type[0][i], begin + 1)) != std::string::npos)
 		{
-			count++;
-			begin = begin + type[!my][i].length();
+			flag = true;
+			begin = begin + type[0][i].length();
+			break;
 		}
-		if (count > 0)
+		if (flag == true)
 		{
-			end = begin;
-			return i + 1;
+			end = begin-1;//注意 第一个字符是固定的‘#’
+			return (i+1);
 		}
-	}return 0;
+	}
+	return 0;
 }
-int getdir(int fake_Board[19][19], int& end, int my) {
+int getdir(int fake_Board[19][19], int& end,int& start_x,int& start_y,int &type, int my)
+{
 
 	//判断出现该棋型的方向，end获得起始位置
 	for (int i = 0; i < 19; i++)//横竖
 	{
 
 		//横
-		if (judgeChessType(fake_Board, i, 0, 1, 0, end, my)) return 1;
+		type=judgeChessType(fake_Board, i, 0, 0, 1, end, my);
+		if (type>0)
+		{
+			start_x = i;
+			start_y = 0;
+			return 1;
+		}
 
 		//竖
-		if (judgeChessType(fake_Board, 0, i, 0, 1, end, my)) return 2;
+		type = judgeChessType(fake_Board, 0, i, 1, 0, end, my);
+		if (type>0)
+		{
+			start_x = 0;
+			start_y = i;
+			return 2;
+		}
 
 		/*  / */
-		if (judgeChessType(fake_Board, 18, i, 1, -1, end, my)) return 3;
+		type = judgeChessType(fake_Board, 0, i, 1, -1, end, my);
+		if (type>0)
+		{
+			start_x = 0;
+			start_y = i;
+			return 3;
+		}
 
 		/*  \ */
-		if (judgeChessType(fake_Board, 0, i, 1, 1, end, my)) return 4;
+		type = judgeChessType(fake_Board, 0, i, 1, 1, end, my);
+		if (type>0)
+		{
+			start_x = 0;
+			start_y = i;
+			return 4;
+		}
 
 	}
 	for (int i = 1; i < 19; i++)//左倾，右倾
 	{
 
 		/*  / */
-		if (judgeChessType(fake_Board, i, 18, 1, -1, end, my)) return 5;
+		type = judgeChessType(fake_Board, i, 18, 1, -1, end, my);
+		if (type>0)
+		{
+			start_x = i;
+			start_y = 18;
+			return 3;
+		}
 
 		/*  \ */
-		if (judgeChessType(fake_Board, i, 0, 1, 1, end, my)) return 6;
+		type = judgeChessType(fake_Board, i, 0, 1, 1, end, my);
+		if (type>0)
+		{
+			start_x = i;
+			start_y = 0;
+			return 4;
+		}
 
 	}
 	return -1;
@@ -283,6 +323,95 @@ void mustDone(int fake_Board[19][19], Step myStep, int my)
 	//直接调用getdir的返回值为方向竖着还是斜着什么的，end代表那个字符串的尾部
 	//+OOOO+如这种情况end获取了最后一个+的位置，我必须走这步，再getdir的方向和棋型特点找第一个+位置，我下一步必须走这个
 	//getdir(int fake_Board[19][19], int& end, int my)
+	int end=0,start_X,start_Y,type;
+	int num1=0, num2=0;
+	int mark=getdir(fake_Board, end, start_X, start_Y, type, my);
+	if (mark == -1) return;
+	//string type[7] = { "oxxxxx+","+xxxxxo","+xxxxx+","+xxxx+","+x+xxx+" ,"+xx+xx+","+xxx+x+" };
+	switch (mark)
+	{
+	case 1:
+	{
+		num1 = 0;
+		num2 = 1;
+	};break;
+	case 2:
+	{
+		num1 = 1;
+		num2 = 0;
+	};break;
+	case 3:
+	{
+		num1 = 1;
+		num2 = -1;
+	};break;
+	case 4:
+	{
+		num1 = 1;
+		num2 = 1;
+	};break;
+	default:
+		break;
+	}
+
+	switch (type)
+	{
+	case 1:
+	{
+		myStep.first.x = start_X+(end-1)*num1;
+		myStep.first.y = start_Y + (end - 1)*num2 ;
+		myStep.second.x = -1;
+		myStep.second.y = -1;
+	};break;
+	case 2:
+	{
+		myStep.first.x = start_X + (end - 7) * num1;
+		myStep.first.y = start_Y + (end - 7)*num2;
+		myStep.second.x = -1;
+		myStep.second.y = -1;
+		
+	};break;
+		case 3:
+		{
+			myStep.first.y = start_Y + (end - 7)*num2;
+			myStep.second.x = start_X + (end - 7) * num1;
+			myStep.first.x = start_X + (end - 1) * num1;
+			myStep.first.y = start_Y + (end - 1) * num2;
+		};break;
+		case 4:
+		{
+			myStep.first.y = start_Y + (end - 6) * num2;
+			myStep.second.x = start_X + (end - 6) * num1;
+			myStep.first.x = start_X + (end - 1) * num1;
+			myStep.first.y = start_Y + (end - 1) * num2;
+		};break;
+		case 5:
+		{
+			myStep.first.y = start_Y + (end - 5) * num2;
+			myStep.second.x = start_X + (end - 5) * num1;
+			myStep.first.x = start_X + (end - 1) * num1;
+			myStep.first.y = start_Y + (end - 1) * num2;
+		};break;
+		case 6:
+		{
+			myStep.first.y = start_Y + (end - 4) * num2;
+			myStep.second.x = start_X + (end - 4) * num1;
+			myStep.first.x = start_X + (end - 1) * num1;
+			myStep.first.y = start_Y + (end - 1) * num2;
+		};break;
+		case 7:
+		{
+			myStep.first.y = start_Y + (end - 3) * num2;
+			myStep.second.x = start_X + (end - 3) * num1;
+			myStep.first.x = start_X + (end - 7) * num1;
+			myStep.first.y = start_Y + (end - 7) * num2;
+		};break;
+		default:
+			break;
+		}
+		
+	
+	
 }
 
 
@@ -353,7 +482,7 @@ void chess_type(int fake_Board[19][19], int x, int y, int directionX, int direct
 	//朦胧三 
 
 	//change_num(directionX, directionY, num);
-	for (int i = 0;i < 19;i++)//直接判断一条线
+	for (int i = 0;i < 38;i++)//直接判断一条线
 	{
 
 		if (x1 < 0 || y1 < 0 || x1 >= 19 || y1 >= 19)
@@ -525,11 +654,11 @@ void value_situation(int fake_Board[19][19], int computerside, Step step, int& v
 	for (int i = 0;i < 19;i++)//横竖，搞定
 	{
 		score_Hori[i] = 0;
-		chess_type(fake_Board1, 0, i, 1, 0, computerside, score_Hori[i]);//横
+		chess_type(fake_Board1, i, 0, 0, 1, computerside, score_Hori[i]);//横
 
 		value += score_Hori[i];
 		score_verti[i] = 0;
-		chess_type(fake_Board1, i, 0, 0, 1, computerside, score_verti[i]);//竖
+		chess_type(fake_Board1, 0, i, 1, 0, computerside, score_verti[i]);//竖
 		value += score_verti[i];
 
 		score_left[num1] = 0;
