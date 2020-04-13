@@ -480,7 +480,7 @@ void chess_type(int fake_Board[19][19], int x, int y, int directionX, int direct
 	//              眠二       眠二               活二
 	std::string f11 = "xoo++++", f12 = "++++oox", f13 = "++++oo++++";
 	//朦胧三 
-
+	std::string f14 = "x++o+oo+x", f15 = "x++oo+o+x", f16 = "x+o+oo++x", f17 = "x+oo+o++x";
 	//change_num(directionX, directionY, num);
 	for (int i = 0;i < 38;i++)//直接判断一条线
 	{
@@ -587,6 +587,40 @@ void chess_type(int fake_Board[19][19], int x, int y, int directionX, int direct
 		begin = begin + f10.length();
 	}
 	value += count * 350;
+	//朦胧三
+	count = 0;
+	begin = -1;
+	while ((begin = a.find(f14, begin + 1)) != std::string::npos)//活三
+	{
+		count++;
+		begin = begin + f14.length();
+	}
+	value += count * 180;
+	count = 0;
+	begin = -1;
+	while ((begin = a.find(f15, begin + 1)) != std::string::npos)//活三
+	{
+		count++;
+		begin = begin + f15.length();
+	}
+	value += count * 180;
+	count = 0;
+	begin = -1;
+	while ((begin = a.find(f16, begin + 1)) != std::string::npos)//活三
+	{
+		count++;
+		begin = begin + f16.length();
+	}
+	value += count * 180;
+	count = 0;
+	begin = -1;
+	while ((begin = a.find(f17, begin + 1)) != std::string::npos)//活三
+	{
+		count++;
+		begin = begin + f17.length();
+	}
+	value += count * 180;
+
 	count = 0;
 	begin = -1;
 	while ((begin = a.find(f8, begin + 1)) != std::string::npos)//眠三
