@@ -235,10 +235,10 @@ int judgeChessType(int fake_Board[19][19], int x, int y, int directionX, int dir
 	{
 		int count = 0;
 		int begin = -1;
-		while ((begin = a.find(type[0][i], begin + 1)) != std::string::npos)
+		while ((begin = a.find(type[i], begin + 1)) != std::string::npos)
 		{
 			flag = true;
-			begin = begin + type[0][i].length();
+			begin = begin + type[i].length();
 			break;
 		}
 		if (flag == true)
