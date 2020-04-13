@@ -249,7 +249,7 @@ int judgeChessType(int fake_Board[19][19], int x, int y, int directionX, int dir
 	}
 	return 0;
 }
-int getdir(int fake_Board[19][19], int& end,int& start_x,int& start_y,int &type, int my)
+int getdir(int fake_Board[19][19], int& end,int& start_x,int& start_y,int &type1, int my)
 {
 
 	//判断出现该棋型的方向，end获得起始位置
@@ -257,8 +257,8 @@ int getdir(int fake_Board[19][19], int& end,int& start_x,int& start_y,int &type,
 	{
 
 		//横
-		type=judgeChessType(fake_Board, i, 0, 0, 1, end, my);
-		if (type>0)
+		type1=judgeChessType(fake_Board, i, 0, 0, 1, end, my);
+		if (type1>0)
 		{
 			start_x = i;
 			start_y = 0;
@@ -266,8 +266,8 @@ int getdir(int fake_Board[19][19], int& end,int& start_x,int& start_y,int &type,
 		}
 
 		//竖
-		type = judgeChessType(fake_Board, 0, i, 1, 0, end, my);
-		if (type>0)
+		type1 = judgeChessType(fake_Board, 0, i, 1, 0, end, my);
+		if (type1>0)
 		{
 			start_x = 0;
 			start_y = i;
@@ -275,8 +275,8 @@ int getdir(int fake_Board[19][19], int& end,int& start_x,int& start_y,int &type,
 		}
 
 		/*  / */
-		type = judgeChessType(fake_Board, 0, i, 1, -1, end, my);
-		if (type>0)
+		type1 = judgeChessType(fake_Board, 0, i, 1, -1, end, my);
+		if (type1>0)
 		{
 			start_x = 0;
 			start_y = i;
@@ -284,8 +284,8 @@ int getdir(int fake_Board[19][19], int& end,int& start_x,int& start_y,int &type,
 		}
 
 		/*  \ */
-		type = judgeChessType(fake_Board, 0, i, 1, 1, end, my);
-		if (type>0)
+		type1 = judgeChessType(fake_Board, 0, i, 1, 1, end, my);
+		if (type1>0)
 		{
 			start_x = 0;
 			start_y = i;
@@ -297,8 +297,8 @@ int getdir(int fake_Board[19][19], int& end,int& start_x,int& start_y,int &type,
 	{
 
 		/*  / */
-		type = judgeChessType(fake_Board, i, 18, 1, -1, end, my);
-		if (type>0)
+		type1 = judgeChessType(fake_Board, i, 18, 1, -1, end, my);
+		if (type1>0)
 		{
 			start_x = i;
 			start_y = 18;
@@ -306,8 +306,8 @@ int getdir(int fake_Board[19][19], int& end,int& start_x,int& start_y,int &type,
 		}
 
 		/*  \ */
-		type = judgeChessType(fake_Board, i, 0, 1, 1, end, my);
-		if (type>0)
+		type1 = judgeChessType(fake_Board, i, 0, 1, 1, end, my);
+		if (type1>0)
 		{
 			start_x = i;
 			start_y = 0;
@@ -325,7 +325,7 @@ void mustDone(int fake_Board[19][19], Step myStep, int my)
 	//getdir(int fake_Board[19][19], int& end, int my)
 	int end=0,start_X,start_Y,type;
 	int num1=0, num2=0;
-	int mark=getdir(fake_Board, end, start_X, start_Y, type, my);
+	int mark=getdir(fake_Board, end, start_X, start_Y, type1, my);
 	if (mark == -1) return;
 	//string type[7] = { "oxxxxx+","+xxxxxo","+xxxxx+","+xxxx+","+x+xxx+" ,"+xx+xx+","+xxx+x+" };
 	switch (mark)
@@ -354,7 +354,7 @@ void mustDone(int fake_Board[19][19], Step myStep, int my)
 		break;
 	}
 
-	switch (type)
+	switch (type1)
 	{
 	case 1:
 	{
