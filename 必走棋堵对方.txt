@@ -1,0 +1,106 @@
+﻿/*******************待改进********************/
+string type[2][8] = { { "xxxxxx","oxxxxx+","+xxxxxo","+xxxxx+","+xxxx+","+x+xxx+" ,"+xx+xx+","+xxx+x+" } ,
+					{ "oooooo","xooooo+","+ooooox","+ooooo+","+oooo+","+o+ooo+","+oo+oo+" "+ooo+o+" } };
+
+int judgeChessType(int fake_Board[19][19], int x, int y, int directionX, int directionY, int& end, int my) {
+
+	//my代表我的角色，！my来代表对方，判断对方是否出现了我必须要堵的情况
+	//判断棋的类型
+	//0为黑
+	std::string a = "#";
+	int num, marko = 0, markx = 0, mark3 = 0;
+	int x1 = x;
+	int y1 = y;
+
+	for (int i = 0; i < 19; i++)//直接判断一条线
+	{
+
+		if (x1 < 0 || y1 < 0 || x1 >= 19 || y1 >= 19)
+		{
+			break;
+		}
+		else
+		{
+
+			if (fake_Board[x1][y1] == WHITE)
+			{
+				std::string b = "o";
+				marko++;
+				a = a + b;
+
+			}
+			else if (fake_Board[x1][y1] == EMPTY)
+			{
+				std::string b = "+";
+				mark3++;
+				a = a + b;
+			}
+			else if (fake_Board[x1][y1] == BLACK)
+			{
+				std::string b = "x";
+				markx++;
+				a = a + b;
+
+			}
+		}
+
+
+		x1 = x1 + directionX;
+		y1 = y1 + directionY;
+	}
+
+
+	for (int i = 0;i < 8;i++)
+	{
+		int count = 0;
+		int begin = -1;
+		while ((begin = a.find(type[!my][i], begin + 1)) != std::string::npos)
+		{
+			count++;
+			begin = begin + type[!my][i].length();
+		}
+		if (count > 0)
+		{
+			end = begin;
+			return i + 1;
+		}
+	}return 0;
+}
+int getdir(int fake_Board[19][19], int& end, int my) {
+
+	//判断出现该棋型的方向，end获得起始位置
+	for (int i = 0; i < 19; i++)//横竖
+	{
+
+		//横
+		if (judgeChessType(fake_Board, i, 0, 1, 0, end, my)) return 1;
+
+		//竖
+		if (judgeChessType(fake_Board, 0, i, 0, 1, end, my)) return 2;
+
+		/*  / */
+		if (judgeChessType(fake_Board, 18, i, 1, -1, end, my)) return 3;
+
+		/*  \ */
+		if (judgeChessType(fake_Board, 0, i, 1, 1, end, my)) return 4;
+
+	}
+	for (int i = 1; i < 19; i++)//左倾，右倾
+	{
+
+		/*  / */
+		if (judgeChessType(fake_Board, i, 18, 1, -1, end, my)) return 5;
+
+		/*  \ */
+		if (judgeChessType(fake_Board, i, 0, 1, 1, end, my)) return 6;
+
+	}
+	return -1;
+
+}
+void mustDone(int fake_Board[19][19], Step myStep, int my)
+{
+	//直接调用getdir的返回值为方向竖着还是斜着什么的，end代表那个字符串的尾部
+	//+OOOO+如这种情况end获取了最后一个+的位置，我必须走这步，再getdir的方向和棋型特点找第一个+位置，我下一步必须走这个
+	//getdir(int fake_Board[19][19], int& end, int my)
+}
