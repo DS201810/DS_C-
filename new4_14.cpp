@@ -1128,7 +1128,7 @@ int getZobrist(int fake_Board[19][19], Step step, int computerside, int score_Ho
 			score_right[Start_Rx + 18] = valueR1;
 		}
 
-		printf("%d\n", cha);
+		//printf("%d\n", cha);
 		current_X = step.second.x;
 		current_X = step.second.y;
 		chess_type(fake_Board, Start_Hx, start_Hy, 0, 1, computerside, valueH2);
@@ -1136,7 +1136,7 @@ int getZobrist(int fake_Board[19][19], Step step, int computerside, int score_Ho
 		chess_type(fake_Board, Start_Lx, start_Ly, 1, -1, computerside, valueL2);
 		chess_type(fake_Board, Start_Rx, start_Ry, 1, 1, computerside, valueR2);
 
-		cha += score_Hori[Start_Hx]; 
+		cha += score_Hori[Start_Hx];
 		cha += score_verti[Start_Vx];
 		score_Hori[Start_Hx] = valueH2;
 		score_verti[Start_Vx] = valueV2;
@@ -2090,7 +2090,7 @@ void gen(int role, int computerside, int board[19][19], vector<Point>& answer, i
 
 	if (role == computerside && !comblockedfours.empty()) {
 		if (comblockedfours.size() == 1 && time == 0) {
-			cout << "...................h" << endl;
+			//cout << "...................h" << endl;
 			for (int m = 0; m < 19; m++)
 				for (int n = 0; n < 19; n++)
 					BBoard[m][n] = board[m][n];
@@ -2445,6 +2445,26 @@ bool isAround(int virtualBoard[19][19], int x, int y)
 	return false;
 }
 
+int initAroundCom(int x, int y, int computerside)
+{
+	//判断是否周围有棋子
+	int range = 1;
+	int cnt = 0;
+	for (int i = -range; i <= range; i++)
+	{
+		for (int j = -range; j <= range; j++)
+		{
+			if (i != 0 && j != 0)
+			{
+				int tx = x + i;
+				int ty = y + j;
+				if (tx >= 0 && tx < n && ty >= 0 && ty < m && Board[tx][ty] == computerside)
+					cnt++;
+			}
+		}
+	}
+	return cnt;
+}
 void getVaildPoint(int virtualBoard[19][19], vector<Point>& t)
 {
 	for (int i = 0; i < n; i++)
@@ -2529,7 +2549,7 @@ bool isCut(Point pt)
 void copyLine(int score_Hori[19], int score_verti[19], int score_left[38], int score_right[38], int bscore_Hori[19], int bscore_verti[19], int bscore_left[38], int bscore_right[38])
 {
 	int i;
-	for (i=0;i < 19;i++)
+	for (i = 0;i < 19;i++)
 	{
 		bscore_Hori[i] = score_Hori[i];
 		bscore_verti[i] = score_verti[i];
@@ -2554,12 +2574,12 @@ void initLineArray(int bscore_Hori[19], int bscore_verti[19], int bscore_left[38
 	}
 	for (;i < 38;i++)
 	{
-		bscore_left[i] =0;
+		bscore_left[i] = 0;
 		bscore_right[i] = 0;
 	}
 }
 
-void initStep(Step &tstep)
+void initStep(Step& tstep)
 {
 	tstep.first.x = -1;
 	tstep.first.y = -1;
@@ -2568,16 +2588,26 @@ void initStep(Step &tstep)
 }
 
 
-int getValue(int f,Step tstep,int computerside,int score_Hori[19], int score_verti[19], int score_left[38], int score_right[38],int old_value)
+int getValue(int f, Step tstep, int computerside, int score_Hori[19], int score_verti[19], int score_left[38], int score_right[38], int old_value)
 {
-	
-	
+
+
 	if (tstep.first.x != -1)
 	{
 		virtualBoard[tstep.first.x][tstep.first.y] = EMPTY;
 		virtualBoard[tstep.second.x][tstep.second.y] = EMPTY;
 	}
-	int value=getZobrist(virtualBoard, tstep, computerside, score_Hori, score_verti, score_left, score_right, old_value);
+	int value = getZobrist(virtualBoard, tstep, computerside, score_Hori, score_verti, score_left, score_right, old_value);
+	if (old_value != -1 && value == 0)
+	{
+		int value1 = initAroundCom(tstep.first.x, tstep.first.y, computerside);
+		int value2 = initAroundCom(tstep.second.x, tstep.second.y, computerside);
+
+		int value3 = initAroundCom(tstep.first.x, tstep.first.y, !computerside);
+		int value4 = initAroundCom(tstep.second.x, tstep.second.y, !computerside);
+
+		value = max(0, abs((value1 - value3) * (value2 - value4)));
+	}
 	if (tstep.first.x != -1)
 	{
 		virtualBoard[tstep.first.x][tstep.first.y] = !f;
@@ -2587,15 +2617,15 @@ int getValue(int f,Step tstep,int computerside,int score_Hori[19], int score_ver
 
 
 
-int min_layer(int deep, const Point father, int f, int computerside, Step tstep, int score_Hori[19], int score_verti[19], int score_left[38], int score_right[38],int old_value)
+int min_layer(int deep, const Point father, int f, int computerside, Step tstep, int score_Hori[19], int score_verti[19], int score_left[38], int score_right[38], int old_value)
 {
 	//对方落子
 	//deep代表深度，farther代表之前的点，f为该点标识（值为0/1，即黑/白。对于min层而言,f总为!computerside）
 
 	//initStep(tstep);
-	
-	int score= getValue(f, tstep, computerside, score_Hori, score_verti, score_left, score_right, old_value);// = evalue(virtualBoard, f);
-	
+
+	int score = getValue(f, tstep, computerside, score_Hori, score_verti, score_left, score_right, old_value);// = evalue(virtualBoard, f);
+
 	if (isOver(virtualBoard) || deep <= 0)
 	{
 		return score;
@@ -2603,7 +2633,7 @@ int min_layer(int deep, const Point father, int f, int computerside, Step tstep,
 	vector<Point> t;
 	gen(f, computerside, virtualBoard, t, 0);
 	int re = MAX, temp;
-	if (t.size() == 0 )//特殊情况处理
+	if (t.size() == 0)//特殊情况处理
 		return MAX;
 	for (int i = 0; i < t.size(); i++)
 	{
@@ -2616,7 +2646,7 @@ int min_layer(int deep, const Point father, int f, int computerside, Step tstep,
 		{
 			initAB(father, t2[j]);//初始化AB值
 			virtualBoard[t2[j].x][t2[j].y] = f;
-			
+
 			//评估中使用
 			int bscore_Hori[19];
 			int bscore_verti[19];
@@ -2625,17 +2655,17 @@ int min_layer(int deep, const Point father, int f, int computerside, Step tstep,
 			tstep.first = t[i];
 			tstep.second = t2[j];
 			copyLine(score_Hori, score_verti, score_left, score_right, bscore_Hori, bscore_verti, bscore_left, bscore_right);
-			
+
 			//将两层看成一层来考虑
 			int temp1 = max_layer(deep - 1, t[i], !f, computerside, tstep, score_Hori, score_verti, score_left, score_right, score);
-			int temp2 = max_layer(deep - 1, t[i], !f, computerside, tstep,score_Hori, score_verti, score_left, score_right,score);
+			int temp2 = max_layer(deep - 1, t[i], !f, computerside, tstep, score_Hori, score_verti, score_left, score_right, score);
 			temp = temp1 + temp2;
 			upDataAB(t[i], temp, f);//更新AB值
 			upDataAB(t2[j], temp, f);//更新AB值
 			//这种方式更新后二者的AB值相同判断一个剪枝即可
 			if (temp < re) re = temp;
 			if (isCut(t[i]))
-				break;
+				return re;
 
 			virtualBoard[t2[j].x][t2[j].y] = EMPTY;
 			copyLine(bscore_Hori, bscore_verti, bscore_left, bscore_right, score_Hori, score_verti, score_left, score_right);
@@ -2656,7 +2686,7 @@ int max_layer(int deep, const Point father, int f, int computerside, Step tstep,
 	vector<Point> t;
 	gen(f, computerside, virtualBoard, t, 1);
 	int re = MIN, temp;//temp用于保存临时分值
-	if (t.size() == 0 )//特殊情况处理
+	if (t.size() == 0)//特殊情况处理
 		return MIN;
 	for (int i = 0; i < t.size(); i++)
 	{
@@ -2688,7 +2718,7 @@ int max_layer(int deep, const Point father, int f, int computerside, Step tstep,
 			//这种方式更新后t[i] t2[j]二者的AB值相同判断一个剪枝即可
 			if (temp > re) re = temp;
 			if (isCut(t[i]))
-				break;
+				return re;
 			virtualBoard[t2[j].x][t2[j].y] = EMPTY;
 			copyLine(bscore_Hori, bscore_verti, bscore_left, bscore_right, score_Hori, score_verti, score_left, score_right);
 		}
@@ -2757,6 +2787,7 @@ void chooseBest(vector<Point> vbest, Step& myStep, int computerside)
 	{
 		fakeBoard[vbest[i].x][vbest[i].y] = computerside;
 		fakeBoard[vbest[i + 1].x][vbest[i + 1].y] = computerside;
+
 		int va = evalue(fakeBoard, computerside);
 		if (va > re)
 		{
@@ -2882,7 +2913,7 @@ void decide(int computerside, Step& myStep) {
 	int score_left[38];
 	int score_right[38];
 	initLineArray(score_Hori, score_verti, score_left, score_right);
-	int score= getValue(-1,ttstep, computerside, score_Hori, score_verti, score_left, score_right, -1);
+	int score = getValue(-1, ttstep, computerside, score_Hori, score_verti, score_left, score_right, -1);
 
 	for (int i = 0; i < len; i++) {
 
@@ -2908,7 +2939,7 @@ void decide(int computerside, Step& myStep) {
 			ttstep.first = v[i];
 			ttstep.second = vt[j];
 			copyLine(score_Hori, score_verti, score_left, score_right, bscore_Hori, bscore_verti, bscore_left, bscore_right);
-			
+
 			int tmp1 = min_layer(deep - 1, v[i], !computerside, computerside, ttstep, score_Hori, score_verti, score_left, score_right, score);
 			int tmp2 = min_layer(deep - 1, v[i], !computerside, computerside, ttstep, score_Hori, score_verti, score_left, score_right, score);
 			int tmp = tmp1 + tmp2;
@@ -2930,7 +2961,8 @@ void decide(int computerside, Step& myStep) {
 	}
 	//保证vbest的size大于等于2,否则下面这个函数会报错
 	chooseBest(vbest, myStep, computerside);
-
+	//myStep.first = vbest[0];
+	//myStep.second = vbest[1];
 }
 
 int main()
