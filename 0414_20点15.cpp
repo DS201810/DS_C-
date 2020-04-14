@@ -461,10 +461,10 @@ int CalculateGrade(int board[][19], int x, int y, int myColor)
 //应该新增必须堵一手 "oxxxx+","+xxxxo" 已增加
 //"xxx+xx", "xx+xxx", "xx++xx"  已增加
 //"oxxx+x+","+x+xxxo" ,"oxx+xx+","+xx+xxo","ox+xxx+","+xxx+xo"
-string type[18] = { "oxxxxx+","+xxxxxo","+xxxxx+","+xxxx+","+x+xxx+" ,"+xx+xx+","+xxx+x+", "oxxxx++","++xxxxo", "xxx+xx", "xx+xxx", "xx++xx" ,"oxxx+x+","+x+xxxo"  ,"oxx+xx+","+xx+xxo","ox+xxx+","+xxx+xo" };
+string type[18] = { "oxxxxx+","+xxxxxo","+xxxxx+","+xxxx+","+x+xxx+" ,"+xx+xx+","+xxx+x+", "oxxxx++","++xxxxo", "xxx+xx", "xx+xxx", "xx++xx" ,"oxxx+x+","+x+xxxo"  ,"oxx+xx+","+xx+xxo","ox+xxx+","+xxx+xo", "x+xxxx","xxxx+x","x++xxx","xxx++x" };
 //type数组的长度。在judgeChessType中用到
 //每次新增type，需要修改此变量以及mustDone中switch(type1)的case也需要相应更新
-int type_len = 18;
+int type_len = 22;
 
 
 int judgeChessType(int fake_Board[19][19], int x, int y, int directionX, int directionY, int& end, int my)
@@ -645,6 +645,10 @@ void mustDone(int fake_Board[19][19], Step& myStep, int my)
 	default:
 		break;
 	}
+	//                      
+	//string type[18] = { 1"oxxxxx+",2"+xxxxxo",3"+xxxxx+",4"+xxxx+",5"+x+xxx+" ,6"+xx+xx+",7"+xxx+x+",
+	//8"oxxxx++",9"++xxxxo",10 "xxx+xx", 11"xx+xxx", 12"xx++xx" ,13"oxxx+x+",14"+x+xxxo"  ,15"oxx+xx+",
+	//"16+xx+xxo",17"ox+xxx+",18"+xxx+xo",19 "x+xxxx",20"xxxx+x",21"x++xxx",22"xxx++x" };
 
 	//再根据type1(是7中必走棋型的哪一种)，以及num1 num2计算必走的位置
 	switch (type1)
@@ -707,15 +711,15 @@ void mustDone(int fake_Board[19][19], Step& myStep, int my)
 	}; break;
 	case 8:
 	{
-		myStep.first.x = start_X + (end - 1) * num1;
-		myStep.first.y = start_Y + (end - 1) * num2;
+		myStep.first.x = start_X + (end - 2) * num1;
+		myStep.first.y = start_Y + (end - 2) * num2;
 		myStep.second.x = -1;
 		myStep.second.y = -1;
 	}; break;
 	case 9:
 	{
-		myStep.first.x = start_X + (end - 7) * num1;
-		myStep.first.y = start_Y + (end - 7) * num2;
+		myStep.first.x = start_X + (end - 6) * num1;
+		myStep.first.y = start_Y + (end - 6) * num2;
 		myStep.second.x = -1;
 		myStep.second.y = -1;
 	}; break;
@@ -787,7 +791,42 @@ void mustDone(int fake_Board[19][19], Step& myStep, int my)
 		myStep.second.x = -1;
 		myStep.second.y = -1;
 	}; break;
+	case 19:
+	{
+
+		myStep.first.x = start_X + (end - 5) * num1;
+		myStep.first.y = start_Y + (end - 5) * num2;
+		myStep.second.x = -1;
+		myStep.second.y = -1;
+	}; break;
+	case 20:
+	{
+		myStep.first.x = start_X + (end - 2) * num1;
+		myStep.first.y = start_Y + (end - 2) * num2;
+		myStep.second.x = -1;
+		myStep.second.y = -1;
+	}; break;
+	case 21:
+	{
+		myStep.first.x = start_X + (end - 4) * num1;
+		myStep.first.y = start_Y + (end - 4) * num2;
+		myStep.second.x = -1;
+		myStep.second.y = -1;
+	}; break;
+	case 22:
+	{
+		myStep.first.x = start_X + (end - 2) * num1;
+		myStep.first.y = start_Y + (end - 2) * num2;
+		myStep.second.x = -1;
+		myStep.second.y = -1;
+	}; break;
 	default:
+	{
+		myStep.first.x = -1;
+		myStep.first.y = -1;
+		myStep.second.x = -1;
+		myStep.second.y = -1;
+	}
 		break;
 	}
 
@@ -832,7 +871,9 @@ void mustWin(int fake_Board[19][19], Step& myStep, int op)
 	default:
 		break;
 	}
-
+	//string type[18] = { 1"oxxxxx+",2"+xxxxxo",3"+xxxxx+",4"+xxxx+",5"+x+xxx+" ,6"+xx+xx+",7"+xxx+x+",
+	//8"oxxxx++",9"++xxxxo",10 "xxx+xx", 11"xx+xxx", 12"xx++xx" ,13"oxxx+x+",14"+x+xxxo"  ,15"oxx+xx+",
+	//"16+xx+xxo",17"ox+xxx+",18"+xxx+xo",19 "x+xxxx",20"xxxx+x",21"x++xxx",22"xxx++x" };
 	//再根据type1(是7中必走棋型的哪一种)，以及num1 num2计算必走的位置
 	switch (type1)
 	{
@@ -974,7 +1015,41 @@ void mustWin(int fake_Board[19][19], Step& myStep, int op)
 		myStep.second.x = start_X + (end - 7) * num1;
 		myStep.second.y = start_X + (end - 7) * num2;
 	}; break;
+	case 19:
+	{
+		myStep.first.x = start_X + (end - 5) * num1;
+		myStep.first.y = start_Y + (end - 5) * num2;
+		myStep.second.x = -1;
+		myStep.second.y = -1;
+	}; break;
+	case 20:
+	{
+		myStep.first.x = start_X + (end - 2) * num1;
+		myStep.first.y = start_Y + (end - 2) * num2;
+		myStep.second.x = -1;
+		myStep.second.y = -1;
+	}; break;
+	case 22:
+	{
+		myStep.first.x = start_X + (end - 5) * num1;
+		myStep.first.y = start_Y + (end - 5) * num2;
+		myStep.second.x = start_X + (end - 4) * num1;
+		myStep.second.y = start_Y + (end - 4) * num2;
+	}; break;
+	case 21:
+	{
+		myStep.first.x = start_X + (end - 2) * num1;
+		myStep.first.y = start_Y + (end - 2) * num2;
+		myStep.second.x = start_X + (end - 3) * num1;
+		myStep.second.y = start_Y + (end - 3) * num2;
+	}; break;
 	default:
+	{
+		myStep.first.x = -1;
+		myStep.first.y = -1;
+		myStep.second.x = -1;
+		myStep.second.y = -1;
+	}
 		break;
 	}
 
