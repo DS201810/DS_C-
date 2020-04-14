@@ -780,7 +780,7 @@ void change_intoStart(int current_X, int current_Y, int& Start_Hx, int& start_Hy
 	//×óÇãÏß
 	Start_Lx = current_X;
 	start_Ly = current_Y;
-	while (Start_Lx > 0 || start_Ly < 18)
+	while (Start_Lx > 0 && start_Ly < 18)
 	{
 		Start_Lx--;
 		start_Ly++;
@@ -789,7 +789,7 @@ void change_intoStart(int current_X, int current_Y, int& Start_Hx, int& start_Hy
 	//ÓÒÇãÏß
 	Start_Rx = current_X;
 	start_Ry = current_Y;
-	while (Start_Rx > 0 || start_Ry > 0)
+	while (Start_Rx > 0 && start_Ry > 0)
 	{
 		Start_Rx--;
 		start_Ry--;
