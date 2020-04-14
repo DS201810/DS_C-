@@ -24,18 +24,16 @@ bool initWhite(Step& myStep)
 {
 	//初始只有一个黑棋，白棋的位置
 	int x, y;
+	int xt[] = {0,-1,0,1,1,-1,-1,1};
+	int yt[] = {-1,0,1,0,-1,-1,1,1};
 	int xx[2], yy[2];
 	int cnt = 0;
 	if (oneBlack(x, y))
 	{
-		for (int i = -1;i <= 1;i++)
+		for (int i =0;i < 8;i++)
 		{
-			for (int j = -1;j <= 1;j++)
-			{
-				if (i != 0 && j != 0)
-				{
-					int tx = x + i;
-					int ty = y + j;
+					int tx = x + xt[i];
+					int ty = y + yt[i];
 					if (inside(tx, ty) && Board[tx][ty] == EMPTY)
 					{
 						xx[cnt] = tx;
@@ -50,8 +48,7 @@ bool initWhite(Step& myStep)
 							return true;
 						}
 					}
-				}
-			}
+			
 		}
 	}
 	return false;
