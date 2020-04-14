@@ -1059,7 +1059,7 @@ int getZobrist(int fake_Board[19][19], Step step, int computerside, int score_Ho
 {
 	int mark = 0, value = 0;
 	bool flag = false;
-
+	int ccccc = zzz.code;
 	mark = zzz.getGO(step.first.x, step.first.y, computerside);//第一步
 	/*
 	if (L1.empty() == true);
@@ -1103,7 +1103,7 @@ int getZobrist(int fake_Board[19][19], Step step, int computerside, int score_Ho
 		chess_type(fake_Board, Start_Hx, start_Hy, 0, 1, computerside, valueH1);
 		chess_type(fake_Board, Start_Vx, start_Vy, 1, 0, computerside, valueV1);
 		chess_type(fake_Board, Start_Lx, start_Ly, 1, -1, computerside, valueL1);
-		chess_type(fake_Board, Start_Hx, start_Hy, 0, 1, computerside, valueR1);
+		chess_type(fake_Board, Start_Rx, start_Ry, 1, 1, computerside, valueR1);
 		cha += score_Hori[Start_Hx]; cha += score_verti[Start_Vx];
 		score_Hori[Start_Hx] = valueH1;
 		score_verti[Start_Vx] = valueV1;
@@ -1134,7 +1134,7 @@ int getZobrist(int fake_Board[19][19], Step step, int computerside, int score_Ho
 		chess_type(fake_Board, Start_Hx, start_Hy, 0, 1, computerside, valueH2);
 		chess_type(fake_Board, Start_Vx, start_Vy, 1, 0, computerside, valueV2);
 		chess_type(fake_Board, Start_Lx, start_Ly, 1, -1, computerside, valueL2);
-		chess_type(fake_Board, Start_Hx, start_Hy, 0, 1, computerside, valueR2);
+		chess_type(fake_Board, Start_Rx, start_Ry, 1, 1, computerside, valueR2);
 
 		cha += score_Hori[Start_Hx]; 
 		cha += score_verti[Start_Vx];
@@ -1167,6 +1167,7 @@ int getZobrist(int fake_Board[19][19], Step step, int computerside, int score_Ho
 	value_situation(fake_Board, computerside, step, value, score_Hori, score_verti, score_left, score_right);//没找到的话
 	ListNode a(mark, value);
 	L1.push_front(a);
+	zzz.code = ccccc;
 	return value;
 }
 
