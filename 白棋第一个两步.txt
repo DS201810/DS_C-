@@ -1,0 +1,58 @@
+bool oneBlack(int &x,int &y)
+{
+	//判断局面是否只有一个黑棋
+	int cnt = 0;
+	for (int i = 0;i < n;i++)
+	{
+		for (int j = 0;j < m;j++)
+		{
+			if (Board[i][j] == BLACK)
+			{
+				cnt++;
+				x = i;
+				y = j;
+			}
+			if (cnt >1)
+				return false;
+		}
+	}
+	if (cnt == 1)
+		return true;
+}
+
+bool initWhite(Step& myStep)
+{
+	//初始只有一个黑棋，白棋的位置
+	int x, y;
+	int xx[2], yy[2];
+	int cnt = 0;
+	if (oneBlack(x, y))
+	{
+		for (int i = -1;i <= 1;i++)
+		{
+			for (int j = -1;j <= 1;j++)
+			{
+				if (i != 0 && j != 0)
+				{
+					int tx = x + i;
+					int ty = y + j;
+					if (inside(tx, ty) && Board[tx][ty] == EMPTY)
+					{
+						xx[cnt] = tx;
+						yy[cnt] = ty;
+						cnt++;
+						if (cnt == 2)
+						{
+							myStep.first.x = xx[0];
+							myStep.first.y = yy[0];
+							myStep.second.x = xx[1];
+							myStep.second.y = yy[1];
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
